@@ -21,10 +21,6 @@ void handleSIGTERM(int sig) {
 
 #pragma mark - Tapping key stroke events
 
-//static void displayPreferencesChanged(CGDirectDisplayID displayID, CGDisplayChangeSummaryFlags flags, void *userInfo) {
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"displayResolutionHasChanged" object:NULL];
-//}
-
 CGEventRef event_tap_callback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
 {
     static int previousKeyCode = 0;
@@ -42,7 +38,6 @@ CGEventRef event_tap_callback(CGEventTapProxy proxy, CGEventType type, CGEventRe
     
     sysEvent = [NSEvent eventWithCGEvent:event];
     // No need to test event type, we know it is NSSystemDefined, becuase that is the same as NX_SYSDEFINED
-    // if ([sysEvent subtype] != NX_SUBTYPE_AUX_CONTROL_BUTTONS && [sysEvent subtype] != NX_SUBTYPE_AUX_MOUSE_BUTTONS) return event;
     if ([sysEvent subtype] != NX_SUBTYPE_AUX_CONTROL_BUTTONS) return event;
     
     AppDelegate* app=(__bridge AppDelegate *)(refcon);
@@ -407,7 +402,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
         CFRelease(runLoopSource);
     }
     
-    CGEventMask eventMask = (/*(1 << kCGEventKeyDown) | (1 << kCGEventKeyUp) |*/CGEventMaskBit(NX_SYSDEFINED));
+    CGEventMask eventMask = (CGEventMaskBit(NX_SYSDEFINED));
     eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, kCGEventTapOptionDefault,
                                 eventMask, event_tap_callback, (__bridge void *)self); // Create an event tap. We are interested in SYS key presses.
     
@@ -585,31 +580,21 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 -(void)completeInitialization
 {
     NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
-    //NSString* version = [infoDict objectForKey:@"CFBundleShortVersionString"];
-    //NSString * operatingSystemVersionString = [[NSProcessInfo processInfo] operatingSystemVersionString];
     NSString* releasesCast = [infoDict objectForKey:@"ReleasesCast"];
     
     SPUUpdater* updater = [[self sparkle_updater] updater];
     [updater setFeedURL:[NSURL URLWithString:releasesCast]];
     [updater setUpdateCheckInterval:60*60*24*7]; // look for new updates every 7 days
-    
-    //[[SUUpdater sharedUpdater] setFeedURL:[NSURL URLWithString:[NSString stringWithFormat: @"http://quantum-technologies.iap.uni-bonn.de/alberti/iTunesVolumeControl/VolumeControlCast.xml.php?version=%@&osxversion=%@",version,[operatingSystemVersionString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]]]];
-    //[[SUUpdater sharedUpdater] setUpdateCheckInterval:60*60*24*7]; // look for new updates every 7 days
-    
-    // [self _loadBezelServices]; // El Capitan and probably older systems
+
     [[NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/OSD.framework"] load];
     self->OSDManager = NSClassFromString(@"OSDManager");
-    
-    //[self checkSIPforAppIdentifier:@"com.apple.iTunes" promptIfNeeded:YES];
-    //[self checkSIPforAppIdentifier:@"com.spotify.client" promptIfNeeded:YES];
-    
+
     if(osxVersion >= 115)
         iTunes = [[PlayerApplication alloc] initWithBundleIdentifier:@"com.apple.Music"];
     else
         iTunes = [[PlayerApplication alloc] initWithBundleIdentifier:@"com.apple.iTunes"];
     
     spotify = [[PlayerApplication alloc] initWithBundleIdentifier:@"com.spotify.client"];
-
     doppler = [[PlayerApplication alloc] initWithBundleIdentifier:@"co.brushedtype.doppler-macos"];
     
     // Force MacOS to ask for authorization to AppleEvents if this was not already given
@@ -623,9 +608,6 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     systemAudio = [[SystemApplication alloc] initWithVersion:osxVersion];
     
     [self showInStatusBar];   // Install icon into the menu bar
-    
-    // NSString* iTunesVersion = [[NSString alloc] initWithString:[iTunes version]];
-    // NSString* spotifyVersion = [[NSString alloc] initWithString:[spotify version]];
     
     [self initializePreferences];
     
@@ -941,50 +923,44 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 {
     id musicPlayerPnt = [self runningPlayer];
     
-    if (musicPlayerPnt != nil)
-    {
-        double volume = [musicPlayerPnt currentVolume];
-        
-        if([musicPlayerPnt oldVolume]<0) // if it was not mute
-        {
-            //volume=[musicProgramPnt soundVolume]+_volumeInc*(increase?1:-1);
-            volume += (increase?1:-1)*increment;
-        }
-        else // if it was mute
-        {
-            // [volumeImageLayer setContents:imgVolOn];  // restore the image of the speaker from mute speaker
-            volume=[musicPlayerPnt oldVolume];
-            [musicPlayerPnt setOldVolume:-1];  // this says that it is not mute
-        }
-        if (volume<0) volume=0;
-        if (volume>100) volume=100;
-        
-        OSDGraphic image = (volume > 0)? OSDGraphicSpeaker : OSDGraphicSpeakerMute;
-        
-        NSInteger numFullBlks = floor(volume/6.25);
-        NSInteger numQrtsBlks = round((volume-(double)numFullBlks*6.25)/1.5625);
-        
-        //NSLog(@"%d %d",(int)numFullBlks,(int)numQrtsBlks);
-        
-        if(!_hideVolumeWindow)
-            [[self->OSDManager sharedManager] showImage:image onDisplayID:CGSMainDisplayID() priority:OSDPriorityDefault msecUntilFade:1000 filledChiclets:(unsigned int)(round(((numFullBlks*4+numQrtsBlks)*1.5625)*100)) totalChiclets:(unsigned int)10000 locked:NO];
-        
-        [musicPlayerPnt setCurrentVolume:volume];
-        
-        if(self->volumeRampTimer == nil)
-            [self emitAcousticFeedback:nil];
-        
-        if( musicPlayerPnt == iTunes)
-            [self setItunesVolume:volume];
-        else if( musicPlayerPnt == spotify)
-            [self setSpotifyVolume:volume];
-        else if (musicPlayerPnt == doppler)
-            [self setDopplerVolume:volume];
-        else if( musicPlayerPnt == systemAudio)
-            [self setSystemVolume:volume];
+    if (musicPlayerPnt == nil) { return; }
     
-        [self refreshVolumeBar:(int)volume];
+    double volume = [musicPlayerPnt currentVolume];
+    
+    // if it was not mute
+    if ([musicPlayerPnt oldVolume] < 0) {
+        volume += (increase ? 1 : -1) * increment;
+    } else {
+        volume = [musicPlayerPnt oldVolume];
+        [musicPlayerPnt setOldVolume: -1];  // this says that it is not mute
     }
+    
+    if (volume < 0) volume=0;
+    if (volume > 100) volume=100;
+    
+    OSDGraphic image = (volume > 0)? OSDGraphicSpeaker : OSDGraphicSpeakerMute;
+    
+    NSInteger numFullBlks = floor(volume/6.25);
+    NSInteger numQrtsBlks = round((volume-(double)numFullBlks*6.25)/1.5625);
+        
+    if(!_hideVolumeWindow)
+        [[self->OSDManager sharedManager] showImage:image onDisplayID:CGSMainDisplayID() priority:OSDPriorityDefault msecUntilFade:1000 filledChiclets:(unsigned int)(round(((numFullBlks*4+numQrtsBlks)*1.5625)*100)) totalChiclets:(unsigned int)10000 locked:NO];
+    
+    [musicPlayerPnt setCurrentVolume:volume];
+    
+    if(self->volumeRampTimer == nil)
+        [self emitAcousticFeedback:nil];
+    
+    if( musicPlayerPnt == iTunes)
+        [self setItunesVolume:volume];
+    else if( musicPlayerPnt == spotify)
+        [self setSpotifyVolume:volume];
+    else if (musicPlayerPnt == doppler)
+        [self setDopplerVolume:volume];
+    else if( musicPlayerPnt == systemAudio)
+        [self setSystemVolume:volume];
+    
+    [self refreshVolumeBar:(int)volume];
 }
 
 - (void) setItunesVolume:(NSInteger)volume

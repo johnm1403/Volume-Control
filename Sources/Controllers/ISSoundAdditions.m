@@ -67,7 +67,6 @@ AudioDeviceID obtainDefaultOutputDevice()
 	return obtainDefaultOutputDevice();
 }
 
-
 //
 //	Return the system sound volume as a float in the range [0...1]
 //
@@ -160,14 +159,14 @@ AudioDeviceID obtainDefaultOutputDevice()
 	
 // **** now manage the volume following the what we found ****
 	
-		//be sure the device has a volume command
+	// be sure the device has a volume command
 	if (! AudioObjectHasProperty(defaultDevID, &theAddress))
 	{
 		NSLog(@"The device 0x%0x does not have a volume to set", defaultDevID);
 		return;
 	}
 	
-		//be sure the device can set the volume
+	// be sure the device can set the volume
 	theError = AudioObjectIsPropertySettable(defaultDevID, &theAddress, &canSetVol);
 	if ( theError!=noErr || !canSetVol )
 	{
@@ -175,7 +174,7 @@ AudioDeviceID obtainDefaultOutputDevice()
 		return;
 	}
 	
-		//if under the threshold then mute it, only if possible - done/exit
+	// if under the threshold then mute it, only if possible - done/exit
 	if (muteValue && hasMute && canMute)
 	{
 		muted = 1;
@@ -205,7 +204,6 @@ AudioDeviceID obtainDefaultOutputDevice()
 		NSLog(@"Unable to set volume for device 0x%0x", defaultDevID);
 	}
 }
-
 
 //
 //	Increase the volume of the system device by a certain value
@@ -315,8 +313,6 @@ AudioDeviceID obtainDefaultOutputDevice()
     
     NSDictionary *error = nil;
     [ASSystemVolume executeAppleEvent:AEsetVolume error:&error];
-    
-    // [NSSound setSystemVolume:currentVolume/100.];
 }
 
 - (double) currentVolume
@@ -340,8 +336,6 @@ AudioDeviceID obtainDefaultOutputDevice()
             NSLog(@"%s AppleScript getVolume error = Return argument has wrong type", __PRETTY_FUNCTION__);
         }
     }
-    
-    // double vol = (double)[NSSound systemVolume]*100;
     
     if (fabs(vol-[self doubleVolume])<1)
     {
