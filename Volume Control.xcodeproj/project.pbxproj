@@ -3,10 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		526409A92CD20A7F0062662B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 526409A82CD20A7F0062662B /* ArgumentParser */; };
+		526409AB2CD20AD00062662B /* VolumeControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526409AA2CD20ABD0062662B /* VolumeControl.swift */; };
+		526409AE2CD20EB30062662B /* volumectl-bridging-header.h in Sources */ = {isa = PBXBuildFile; fileRef = 526409AD2CD20E9C0062662B /* volumectl-bridging-header.h */; };
 		654864A827480DE600F78F99 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654864A627480DCC00F78F99 /* Sparkle.framework */; };
 		654864A927480DE600F78F99 /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 654864A627480DCC00F78F99 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		65533217267F5D86004231D6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 65533216267F5D86004231D6 /* README.md */; };
@@ -27,6 +30,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		5264099A2CD20A1F0062662B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		65240F052697021A007ABB5F /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -41,6 +53,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5264099C2CD20A1F0062662B /* volumectl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = volumectl; sourceTree = BUILT_PRODUCTS_DIR; };
+		526409AA2CD20ABD0062662B /* VolumeControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeControl.swift; sourceTree = "<group>"; };
+		526409AD2CD20E9C0062662B /* volumectl-bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "volumectl-bridging-header.h"; sourceTree = "<group>"; };
 		65220C75267F49CB007BE316 /* generate_keys.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = generate_keys.rb; sourceTree = "<group>"; };
 		65220C76267F49D4007BE316 /* sign_update.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = sign_update.rb; sourceTree = "<group>"; };
 		654864A627480DCC00F78F99 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
@@ -112,6 +127,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		526409992CD20A1F0062662B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				526409A92CD20A7F0062662B /* ArgumentParser in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		65996C52267EA86A0080A9A5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,10 +151,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		526409A42CD20A2F0062662B /* volumectl */ = {
+			isa = PBXGroup;
+			children = (
+				526409AD2CD20E9C0062662B /* volumectl-bridging-header.h */,
+				526409AA2CD20ABD0062662B /* VolumeControl.swift */,
+			);
+			path = volumectl;
+			sourceTree = "<group>";
+		};
+		526409A62CD20A370062662B /* Command Line interface */ = {
+			isa = PBXGroup;
+			children = (
+				526409A42CD20A2F0062662B /* volumectl */,
+			);
+			path = "Command Line interface";
+			sourceTree = "<group>";
+		};
 		65996C4C267EA86A0080A9A5 = {
 			isa = PBXGroup;
 			children = (
 				65996CD7267EAAC40080A9A5 /* User interface */,
+				526409A62CD20A370062662B /* Command Line interface */,
 				65996D03267EAC1F0080A9A5 /* Sources */,
 				65996D1C267EADAA0080A9A5 /* Resources */,
 				65996E1C267EB3030080A9A5 /* Info.plist */,
@@ -144,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				65996C55267EA86A0080A9A5 /* Volume Control.app */,
+				5264099C2CD20A1F0062662B /* volumectl */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -325,6 +367,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5264099B2CD20A1F0062662B /* volumectl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 526409A22CD20A1F0062662B /* Build configuration list for PBXNativeTarget "volumectl" */;
+			buildPhases = (
+				526409982CD20A1F0062662B /* Sources */,
+				526409992CD20A1F0062662B /* Frameworks */,
+				5264099A2CD20A1F0062662B /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = volumectl;
+			packageProductDependencies = (
+				526409A82CD20A7F0062662B /* ArgumentParser */,
+			);
+			productName = volumectl;
+			productReference = 5264099C2CD20A1F0062662B /* volumectl */;
+			productType = "com.apple.product-type.tool";
+		};
 		65996C54267EA86A0080A9A5 /* Volume Control */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 65996C66267EA86B0080A9A5 /* Build configuration list for PBXNativeTarget "Volume Control" */;
@@ -349,8 +411,12 @@
 		65996C4D267EA86A0080A9A5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1410;
 				TargetAttributes = {
+					5264099B2CD20A1F0062662B = {
+						CreatedOnToolsVersion = 16.1;
+					};
 					65996C54267EA86A0080A9A5 = {
 						CreatedOnToolsVersion = 12.5;
 					};
@@ -365,11 +431,15 @@
 				Base,
 			);
 			mainGroup = 65996C4C267EA86A0080A9A5;
+			packageReferences = (
+				526409A72CD20A7F0062662B /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+			);
 			productRefGroup = 65996C56267EA86A0080A9A5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				65996C54267EA86A0080A9A5 /* Volume Control */,
+				5264099B2CD20A1F0062662B /* volumectl */,
 			);
 		};
 /* End PBXProject section */
@@ -391,6 +461,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		526409982CD20A1F0062662B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				526409AE2CD20EB30062662B /* volumectl-bridging-header.h in Sources */,
+				526409AB2CD20AD00062662B /* VolumeControl.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		65996C51267EA86A0080A9A5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -405,6 +484,45 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		526409A02CD20A1F0062662B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N5LFPP22TK;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OBJC_BRIDGING_HEADER = "\"Command Line Interface/volumectl/volumectl-bridging-header.h\"";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		526409A12CD20A1F0062662B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N5LFPP22TK;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_BRIDGING_HEADER = "\"Command Line Interface/volumectl/volumectl-bridging-header.h\"";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		65996C64267EA86B0080A9A5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -528,7 +646,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 9V3X7C8VCK;
+				DEVELOPMENT_TEAM = 4TFA698Y9W;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -557,7 +675,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 9V3X7C8VCK;
+				DEVELOPMENT_TEAM = 4TFA698Y9W;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -579,6 +697,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		526409A22CD20A1F0062662B /* Build configuration list for PBXNativeTarget "volumectl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				526409A02CD20A1F0062662B /* Debug */,
+				526409A12CD20A1F0062662B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		65996C50267EA86A0080A9A5 /* Build configuration list for PBXProject "Volume Control" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -598,6 +725,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		526409A72CD20A7F0062662B /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		526409A82CD20A7F0062662B /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526409A72CD20A7F0062662B /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 65996C4D267EA86A0080A9A5 /* Project object */;
 }
