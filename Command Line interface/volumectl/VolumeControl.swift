@@ -9,20 +9,31 @@ import ArgumentParser
 
 @main
 struct VolumeControl: ParsableCommand {
+    
     static let configuration = CommandConfiguration(commandName: "volumectl")
     
-    enum VolumeChange: String, ExpressibleByArgument {
+    enum VolumeChange: String, ExpressibleByArgument, CaseIterable {
         case up, down
     }
     
-    enum VolumeTarget: String, ExpressibleByArgument {
-        case system, music, spotify, doppler
+    enum VolumeTarget: String, ExpressibleByArgument, CaseIterable {
+        case system, music
     }
     
-    @Argument var change: VolumeChange
-    @Option var target: VolumeTarget
+    @Argument(help: "The direction of the volume change")
+    var change: VolumeChange
+    
+    @Option(help: "The target to volume of")
+    var target: VolumeTarget
     
     mutating func run() {
-        print("Trying to change volume \(change.rawValue) on \(target.rawValue)...")
+        DistributedNotificationCenter.default().post(
+            name: Notification.Name("net.martinsoft.VolumeControl.cliControl"),
+            object: nil,
+            userInfo: [
+                "target": target.rawValue,
+                "direction": change.rawValue
+            ]
+        )
     }
 }

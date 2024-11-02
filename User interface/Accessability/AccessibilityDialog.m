@@ -117,7 +117,7 @@
 {
     bool isDark = [[[NSApp effectiveAppearance] name] isEqualToString:@"NSAppearanceNameDarkAqua"];
     
-    if(isDark)
+    if (isDark)
         screenshotImage = [NSImage imageNamed:@"SecurityPrivacyDark"];
     else
         screenshotImage = [NSImage imageNamed:@"SecurityPrivacyLight"];

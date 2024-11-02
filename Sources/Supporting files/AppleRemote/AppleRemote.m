@@ -80,14 +80,14 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 - (id)init
 {
     self = [super init];
-    if(self)
+    if (self)
     {
         openInExclusiveMode = YES;
         queue = NULL;
         hidDeviceInterface = NULL;
         cookieToButtonMapping = [[NSMutableDictionary alloc] init];
 
-        if( NSAppKitVersionNumber < 1038.13 )
+        if ( NSAppKitVersionNumber < 1038.13 )
         {
             /* Leopard and early Snow Leopard Cookies */
             //msg_Dbg( VLCIntf, "using Leopard AR cookies" );
@@ -103,7 +103,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]   forKey:@"35_31_18_35_31_18_"];
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]   forKey:@"19_"];
         }
-        else if( OSX_LION )
+        else if ( OSX_LION )
         {
             /* Lion cookies */
             //msg_Dbg( VLCIntf, "using future AR cookies" );
@@ -691,7 +691,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 @implementation AppleRemoteApplicationDelegate
 
 - (id) initWithApplicationDelegate: (id) delegate {
-    if((self = [super init]))
+    if ((self = [super init]))
         applicationDelegate = delegate;
     return self;
 }

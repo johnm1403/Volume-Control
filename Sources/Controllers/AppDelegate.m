@@ -55,13 +55,13 @@ CGEventRef event_tap_callback(CGEventTapProxy proxy, CGEventType type, CGEventRe
     {
         case NX_KEYTYPE_MUTE:
             
-            if(previousKeyCode!=keyCode && app->volumeRampTimer)
+            if (previousKeyCode!=keyCode && app->volumeRampTimer)
             {
                 [app stopVolumeRampTimer];
             }
             previousKeyCode=keyCode;
             
-            if( keyState == 1 )
+            if ( keyState == 1 )
             {
                 muteDown = true;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"MuteVol" object:NULL];
@@ -75,19 +75,19 @@ CGEventRef event_tap_callback(CGEventTapProxy proxy, CGEventType type, CGEventRe
         case NX_KEYTYPE_SOUND_UP:
         case NX_KEYTYPE_SOUND_DOWN:
             
-            if(!muteDown)
+            if (!muteDown)
             {
-                if(previousKeyCode!=keyCode && app->volumeRampTimer)
+                if (previousKeyCode!=keyCode && app->volumeRampTimer)
                 {
                     [app stopVolumeRampTimer];
                 }
                 previousKeyCode=keyCode;
                 
-                if( keyState == 1 )
+                if ( keyState == 1 )
                 {
-                    if( !app->volumeRampTimer )
+                    if ( !app->volumeRampTimer )
                     {
-                        if( keyCode == NX_KEYTYPE_SOUND_UP )
+                        if ( keyCode == NX_KEYTYPE_SOUND_UP )
                             [[NSNotificationCenter defaultCenter] postNotificationName:(keyIsRepeat?@"IncVolRamp":@"IncVol") object:NULL];
                         else
                             [[NSNotificationCenter defaultCenter] postNotificationName:(keyIsRepeat?@"DecVolRamp":@"DecVol") object:NULL];
@@ -95,7 +95,7 @@ CGEventRef event_tap_callback(CGEventTapProxy proxy, CGEventType type, CGEventRe
                 }
                 else
                 {
-                    if(app->volumeRampTimer)
+                    if (app->volumeRampTimer)
                     {
                         [app stopVolumeRampTimer];
                     }
@@ -223,7 +223,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 
 - (IBAction)terminate:(id)sender
 {
-    if(CFMachPortIsValid(eventTap)) {
+    if (CFMachPortIsValid(eventTap)) {
         CFMachPortInvalidate(eventTap);
         CFRunLoopSourceInvalidate(runLoopSource);
         CFRelease(eventTap);
@@ -232,7 +232,8 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
-    
+    [[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
+
     systemAudio = nil;
     iTunes = nil;
     spotify = nil;
@@ -258,6 +259,25 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     preferences = nil;
     
     [NSApp terminate:nil];
+}
+
+- (void)handleCommandLineNotification:(NSNotification *)notification {
+    NSString *targetNotificationName = @"net.martinsoft.VolumeControl.cliControl";
+
+    if ([notification.name isEqualToString:targetNotificationName]) {
+        NSDictionary* info = notification.userInfo;
+        
+        NSString *target = [info[@"target"] isKindOfClass:[NSString class]] ? info[@"target"] : nil;
+        NSString *direction = [info[@"direction"] isKindOfClass:[NSString class]] ? info[@"direction"] : nil;
+        
+        [self setAppleCMDModifierPressed:(_UseAppleCMDModifier == [target isEqualToString:@"music"])];
+        
+        if ([direction isEqualToString: @"up"]) {
+            [self setVolumeUp:true];
+        } else if ([direction isEqualToString: @"down"]) {
+            [self setVolumeUp:false];
+        }
+    }
 }
 
 - (bool) StartAtLogin
@@ -295,7 +315,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
                 CFRelease(url);
             }
             
-            if(found)break;
+            if (found)break;
         }
         
         CFRelease((__bridge CFTypeRef)(loginItemsArray));
@@ -318,14 +338,14 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     NSMenuItem* menuItem=[_statusMenu itemWithTag:4];
     [menuItem setState:enabled];
     
-    if(savePreferences)
+    if (savePreferences)
     {
         NSURL *appURL=[NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]];
         
         LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
         
         if (loginItems) {
-            if(enabled)
+            if (enabled)
             {
                 // Insert the item at the bottom of Login Items list.
                 LSSharedFileListItemRef loginItemRef = LSSharedFileListInsertItemURL(loginItems,
@@ -395,7 +415,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 
 - (bool)createEventTap
 {
-    if(eventTap != nil && CFMachPortIsValid(eventTap)) {
+    if (eventTap != nil && CFMachPortIsValid(eventTap)) {
         CFMachPortInvalidate(eventTap);
         CFRunLoopSourceInvalidate(runLoopSource);
         CFRelease(eventTap);
@@ -406,7 +426,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, kCGEventTapOptionDefault,
                                 eventMask, event_tap_callback, (__bridge void *)self); // Create an event tap. We are interested in SYS key presses.
     
-    if(eventTap != nil)
+    if (eventTap != nil)
     {
         runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0); // Create a run loop source.
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes); // Add to the current run loop.
@@ -451,12 +471,12 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     
     if (musicPlayerPnt != nil)
     {
-        if([musicPlayerPnt oldVolume]<0)
+        if ([musicPlayerPnt oldVolume]<0)
         {
             [musicPlayerPnt setOldVolume:[musicPlayerPnt currentVolume]];
             [musicPlayerPnt setCurrentVolume:0];
             
-            if(!_hideVolumeWindow)
+            if (!_hideVolumeWindow)
                 [[self->OSDManager sharedManager] showImage:OSDGraphicSpeakerMute onDisplayID:CGSMainDisplayID() priority:OSDPriorityDefault msecUntilFade:1000 filledChiclets:0 totalChiclets:(unsigned int)100 locked:NO];
             
         }
@@ -465,7 +485,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
             [musicPlayerPnt setCurrentVolume:[musicPlayerPnt oldVolume]];
             [volumeImageLayer setContents:imgVolOn];
             
-            if(!_hideVolumeWindow)
+            if (!_hideVolumeWindow)
                 [[self->OSDManager sharedManager] showImage:OSDGraphicSpeaker onDisplayID:CGSMainDisplayID() priority:OSDPriorityDefault msecUntilFade:1000 filledChiclets:(unsigned int)[musicPlayerPnt oldVolume] totalChiclets:(unsigned int)100 locked:NO];
             
             [musicPlayerPnt setOldVolume:-1];
@@ -484,14 +504,14 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 
 - (void)IncVol:(NSNotification *)aNotification
 {
-    if( [[aNotification name] isEqualToString:@"IncVolRamp"] )
+    if ( [[aNotification name] isEqualToString:@"IncVolRamp"] )
     {
         [checkPlayerTimer invalidate];
         checkPlayerTimer = nil;
         volumeRampTimer=[NSTimer timerWithTimeInterval:volumeRampTimeInterval*(NSTimeInterval)increment target:self selector:@selector(rampVolumeUp:) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:volumeRampTimer forMode:NSRunLoopCommonModes];
         
-        if(timerImgSpeaker) {[timerImgSpeaker invalidate]; timerImgSpeaker=nil;}
+        if (timerImgSpeaker) {[timerImgSpeaker invalidate]; timerImgSpeaker=nil;}
     }
     else
     {
@@ -501,14 +521,14 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 
 - (void)DecVol:(NSNotification *)aNotification
 {
-    if( [[aNotification name] isEqualToString:@"DecVolRamp"] )
+    if ( [[aNotification name] isEqualToString:@"DecVolRamp"] )
     {
         [checkPlayerTimer invalidate];
         checkPlayerTimer = nil;
         volumeRampTimer=[NSTimer timerWithTimeInterval:volumeRampTimeInterval*(NSTimeInterval)increment target:self selector:@selector(rampVolumeDown:) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:volumeRampTimer forMode:NSRunLoopCommonModes];
         
-        if(timerImgSpeaker) {[timerImgSpeaker invalidate]; timerImgSpeaker=nil;}
+        if (timerImgSpeaker) {[timerImgSpeaker invalidate]; timerImgSpeaker=nil;}
     }
     else
     {
@@ -519,7 +539,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 - (id)init
 {
     self = [super init];
-    if(self)
+    if (self)
     {
         self->eventTap = nil;
                 
@@ -589,7 +609,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     [[NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/OSD.framework"] load];
     self->OSDManager = NSClassFromString(@"OSDManager");
 
-    if(osxVersion >= 115)
+    if (osxVersion >= 115)
         iTunes = [[PlayerApplication alloc] initWithBundleIdentifier:@"com.apple.Music"];
     else
         iTunes = [[PlayerApplication alloc] initWithBundleIdentifier:@"com.apple.iTunes"];
@@ -598,11 +618,11 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     doppler = [[PlayerApplication alloc] initWithBundleIdentifier:@"co.brushedtype.doppler-macos"];
     
     // Force MacOS to ask for authorization to AppleEvents if this was not already given
-    if([iTunes isRunning])
+    if ([iTunes isRunning])
         [iTunes currentVolume];
-    if([spotify isRunning])
+    if ([spotify isRunning])
         [spotify currentVolume];
-    if([doppler isRunning])
+    if ([doppler isRunning])
         [doppler currentVolume];
     
     systemAudio = [[SystemApplication alloc] initWithVersion:osxVersion];
@@ -614,13 +634,19 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     [self setStartAtLogin:[self StartAtLogin] savePreferences:false];
     
     volumeSound = [[NSSound alloc] initWithContentsOfFile:@"/System/Library/LoginPlugins/BezelServices.loginPlugin/Contents/Resources/volume.aiff" byReference:false];
+    
+    [[NSDistributedNotificationCenter defaultCenter]
+        addObserver: self
+        selector: @selector(handleCommandLineNotification:)
+        name: @"net.martinsoft.VolumeControl.cliControl"
+        object: nil];
 }
 
 - (void)emitAcousticFeedback:(NSNotification *)aNotification
 {
-    if([self PlaySoundFeedback] && (_AppleCMDModifierPressed != _UseAppleCMDModifier || [[self runningPlayer] isKindOfClass:[SystemApplication class]]))
+    if ([self PlaySoundFeedback] && (_AppleCMDModifierPressed != _UseAppleCMDModifier || [[self runningPlayer] isKindOfClass:[SystemApplication class]]))
     {
-        if([volumeSound isPlaying])
+        if ([volumeSound isPlaying])
             [volumeSound stop];
         [volumeSound play];
     }
@@ -644,7 +670,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     
     extern CFStringRef kAXTrustedCheckOptionPrompt __attribute__((weak_import));
         
-    if( AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef)@{(__bridge id)kAXTrustedCheckOptionPrompt: @NO}) && [self createEventTap] )
+    if ( AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef)@{(__bridge id)kAXTrustedCheckOptionPrompt: @NO}) && [self createEventTap] )
     {
         [self completeInitialization];
     }
@@ -690,7 +716,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 
 - (void)updateSystemVolume:(NSTimer*)theTimer
 {
-    if([systemAudio isMuted])
+    if ([systemAudio isMuted])
         [[self systemPerc] setStringValue:[NSString stringWithFormat:@"(%d%%)",0]];
     else
         [[self systemPerc] setStringValue:[NSString stringWithFormat:@"(%d%%)",(int)[systemAudio currentVolume]]];
@@ -720,7 +746,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     [self setHideFromStatusBar:[preferences boolForKey:    @"hideFromStatusBarPreference"]];
     [self setHideVolumeWindow:[preferences boolForKey:     @"hideVolumeWindowPreference"]];
     [[self iTunesBtn] setState:[preferences boolForKey:    @"iTunesControl"]];
-    if(osxVersion >= 115)
+    if (osxVersion >= 115)
     {
         [[self iTunesBtn] setTitle:@"Music"];
     }
@@ -853,7 +879,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
     NSString* version = [infoDict objectForKey:@"CFBundleVersion"];
     NSRange range=[version rangeOfString:@"." options:NSBackwardsSearch];
-    if(version>0) version=[version substringFromIndex:range.location+1];
+    if (version>0) version=[version substringFromIndex:range.location+1];
     
     infoDict = [NSDictionary dictionaryWithObjectsAndKeys:
                 version,@"Version",
@@ -863,64 +889,52 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     [[NSApplication sharedApplication] orderFrontStandardAboutPanelWithOptions:infoDict];
 }
 
-- (void) receiveWakeNote: (NSNotification*) note
-{
+- (void)receiveWakeNote: (NSNotification*)note {
     NSLog(@"Received WakeNote: %@", [note name]);
     [self setTapping:[self Tapping]];
 }
 
-- (void) dealloc
-{
+- (void)dealloc {
     
 }
 
--(void)resetEventTap
-{
+-(void)resetEventTap {
     CGEventTapEnable(eventTap, _Tapping);
 }
 
-- (void)resetCurrentPlayer:(NSTimer*)theTimer
-{
+- (void)resetCurrentPlayer:(NSTimer*)theTimer {
     [checkPlayerTimer invalidate];
     checkPlayerTimer = nil;
     currentPlayer = nil;
 }
 
-- (id)runningPlayer
-{
-    if(currentPlayer)
+- (id)runningPlayer {
+    if (currentPlayer) {
         return currentPlayer;
+    }
     
     checkPlayerTimer = [NSTimer timerWithTimeInterval:checkPlayerTimeout target:self selector:@selector(resetCurrentPlayer:) userInfo:nil repeats:NO];
-    [[NSRunLoop mainRunLoop] addTimer:checkPlayerTimer forMode:NSRunLoopCommonModes];
+    [NSRunLoop.mainRunLoop addTimer:checkPlayerTimer forMode:NSRunLoopCommonModes];
     
-    if(_AppleCMDModifierPressed == _UseAppleCMDModifier)
-    {
-        if([_iTunesBtn state] && [iTunes isRunning] && [iTunes playerState] == iTunesEPlSPlaying)
-        {
+    if (_AppleCMDModifierPressed == _UseAppleCMDModifier) {
+        if ([_iTunesBtn state] && [iTunes isRunning]) {
             currentPlayer = iTunes;
-        }
-        else if([_spotifyBtn state] && [spotify isRunning] && [spotify playerState] == SpotifyEPlSPlaying)
-        {
+        } else if ([_spotifyBtn state] && [spotify isRunning]) {
             currentPlayer = spotify;
         }
-        else if([_dopplerBtn state] && [doppler isRunning] && [doppler playerState] == DopplerEPlSPlaying)
-        {
+        else if ([_dopplerBtn state] && [doppler isRunning]) {
             currentPlayer = doppler;
-        }
-        else if([_systemBtn state])
-        {
+        } else if ([_systemBtn state]) {
             currentPlayer = systemAudio;
         }
-    }
-    else
+    } else {
         currentPlayer = systemAudio;
+    }
     
     return currentPlayer;
 }
 
-- (void)setVolumeUp:(bool)increase
-{
+- (void)setVolumeUp:(bool)increase {
     id musicPlayerPnt = [self runningPlayer];
     
     if (musicPlayerPnt == nil) { return; }
@@ -942,94 +956,88 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     
     NSInteger numFullBlks = floor(volume/6.25);
     NSInteger numQrtsBlks = round((volume-(double)numFullBlks*6.25)/1.5625);
-        
-    if(!_hideVolumeWindow)
+    
+    if (!_hideVolumeWindow)
         [[self->OSDManager sharedManager] showImage:image onDisplayID:CGSMainDisplayID() priority:OSDPriorityDefault msecUntilFade:1000 filledChiclets:(unsigned int)(round(((numFullBlks*4+numQrtsBlks)*1.5625)*100)) totalChiclets:(unsigned int)10000 locked:NO];
     
     [musicPlayerPnt setCurrentVolume:volume];
     
-    if(self->volumeRampTimer == nil)
+    if (self->volumeRampTimer == nil) {
         [self emitAcousticFeedback:nil];
+    }
     
-    if( musicPlayerPnt == iTunes)
+    if (musicPlayerPnt == iTunes)
         [self setItunesVolume:volume];
-    else if( musicPlayerPnt == spotify)
+    else if (musicPlayerPnt == spotify)
         [self setSpotifyVolume:volume];
     else if (musicPlayerPnt == doppler)
         [self setDopplerVolume:volume];
-    else if( musicPlayerPnt == systemAudio)
+    else if (musicPlayerPnt == systemAudio)
         [self setSystemVolume:volume];
     
     [self refreshVolumeBar:(int)volume];
 }
 
-- (void) setItunesVolume:(NSInteger)volume
-{
-    if (volume == -1)
-        [[self iTunesPerc] setHidden:YES];
-    else
-    {
-        [[self iTunesPerc] setHidden:NO];
-        [[self iTunesPerc] setStringValue:[NSString stringWithFormat:@"(%d%%)",(int)volume]];
+- (void)setItunesVolume:(NSInteger)volume {
+    NSLog(@"Setting iTunes volume to (%d%%)", (int)volume);
+    if (volume == -1) {
+        [self.iTunesPerc setHidden:YES];
+    } else {
+        [self.iTunesPerc setHidden:NO];
+        [self.iTunesPerc setStringValue:[NSString stringWithFormat:@"(%d%%)",(int)volume]];
     }
 }
 
-- (void) setSpotifyVolume:(NSInteger)volume
-{
-    if (volume == -1)
-        [[self spotifyPerc] setHidden:YES];
-    else
-    {
-        [[self spotifyPerc] setHidden:NO];
-        [[self spotifyPerc] setStringValue:[NSString stringWithFormat:@"(%d%%)",(int)volume]];
+- (void) setSpotifyVolume:(NSInteger)volume {
+    if (volume == -1) {
+        [self.spotifyPerc setHidden:YES];
+    } else {
+        [self.spotifyPerc setHidden:NO];
+        [self.spotifyPerc setStringValue:[NSString stringWithFormat:@"(%d%%)",(int)volume]];
     }
 }
 
-- (void) setDopplerVolume:(NSInteger)volume
-{
-    if (volume == -1)
-        [[self dopplerPerc] setHidden:YES];
-    else
-    {
-        [[self dopplerPerc] setHidden:NO];
-        [[self dopplerPerc] setStringValue:[NSString stringWithFormat:@"(%d%%)",(int)volume]];
+- (void) setDopplerVolume:(NSInteger)volume {
+    if (volume == -1) {
+        [self.dopplerPerc setHidden:YES];
+    } else {
+        [self.dopplerPerc setHidden:NO];
+        [self.dopplerPerc setStringValue:[NSString stringWithFormat:@"(%d%%)",(int)volume]];
     }
 }
 
-- (void) setSystemVolume:(NSInteger)volume
-{
-    if (volume == -1)
-        [[self systemPerc] setHidden:YES];
-    else
-    {
-        [[self systemPerc] setHidden:NO];
-        [[self systemPerc] setStringValue:[NSString stringWithFormat:@"(%d%%)",(int)volume]];
+- (void) setSystemVolume:(NSInteger)volume {
+    if (volume == -1) {
+        [self.systemPerc setHidden:YES];
+    } else {
+        [self.systemPerc setHidden:NO];
+        [self.systemPerc setStringValue:[NSString stringWithFormat:@"(%d%%)",(int)volume]];
     }
-    
 }
 
-- (void) updatePercentages
-{
-    if([iTunes isRunning])
-        [self setItunesVolume:[iTunes currentVolume]];
-    else
+- (void)updatePercentages {
+    if (iTunes.isRunning) {
+        [self setItunesVolume:iTunes.currentVolume];
+    } else {
         [self setItunesVolume:-1];
+    }
     
-    if([spotify isRunning])
-        [self setSpotifyVolume:[spotify currentVolume]];
-    else
+    if (spotify.isRunning) {
+        [self setSpotifyVolume:spotify.currentVolume];
+    } else {
         [self setSpotifyVolume:-1];
-
-    if ([doppler isRunning])
-        [self setDopplerVolume:[doppler currentVolume]];
-    else
-        [self setDopplerVolume:-1];
+    }
     
-    [self setSystemVolume:[systemAudio currentVolume]];
+    if (doppler.isRunning) {
+        [self setDopplerVolume:doppler.currentVolume];
+    } else {
+        [self setDopplerVolume:-1];
+    }
+    
+    [self setSystemVolume:systemAudio.currentVolume];
 }
 
-- (void) refreshVolumeBar:(NSInteger)volume
-{
+- (void)refreshVolumeBar:(NSInteger)volume {
     NSInteger doubleFullRectangles = (NSInteger)round(32.0f * volume / 100.0f);
     NSInteger fullRectangles=doubleFullRectangles>>1;
     
@@ -1037,27 +1045,22 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     [CATransaction setAnimationDuration: 0.0];
     [CATransaction setDisableActions: TRUE];
     
-    if(volume==0)
-    {
+    if (volume == 0) {
         [volumeImageLayer setContents:imgVolOff];
-    }
-    else
-    {
+    } else {
         [volumeImageLayer setContents:imgVolOn];
     }
     
     CGRect frame;
     
-    for(NSInteger i=0; i<fullRectangles; i++)
-    {
+    for (NSInteger i=0; i<fullRectangles; i++) {
         frame = [volumeBar[i] frame];
         frame.size.width=9;
         [volumeBar[i] setFrame:frame];
         
         [volumeBar[i] setHidden:NO];
     }
-    for(NSInteger i=fullRectangles; i<16; i++)
-    {
+    for (NSInteger i=fullRectangles; i<16; i++) {
         frame = [volumeBar[i] frame];
         frame.size.width=9;
         [volumeBar[i] setFrame:frame];
@@ -1065,9 +1068,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
         [volumeBar[i] setHidden:YES];
     }
     
-    if(fullRectangles*2 != doubleFullRectangles)
-    {
-        
+    if (fullRectangles*2 != doubleFullRectangles) {
         frame = [volumeBar[fullRectangles] frame];
         frame.size.width=5;
         
@@ -1098,7 +1099,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
     [preferences setBool:enabled forKey:@"hideFromStatusBarPreference"];
     [preferences synchronize];
     
-    if(enabled)
+    if (enabled)
     {
         if (![_statusBarHideTimer isValid] && [self statusBar])
         {
@@ -1216,7 +1217,7 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 {
     [self updatePercentages];
     
-    if(!_Tapping)
+    if (!_Tapping)
     {
         updateSystemVolumeTimer = [NSTimer timerWithTimeInterval:updateSystemVolumeInterval target:self selector:@selector(updateSystemVolume:) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:updateSystemVolumeTimer forMode:NSRunLoopCommonModes];
@@ -1229,10 +1230,10 @@ static NSTimeInterval updateSystemVolumeInterval=0.1f;
 - (void)menuDidClose:(NSMenu *)menu
 {
     menuIsVisible=false;
-    if([self hideFromStatusBar])
+    if ([self hideFromStatusBar])
         [self showHideFromStatusBarHintPopover];
     
-    if(updateSystemVolumeTimer)
+    if (updateSystemVolumeTimer)
     {
         [updateSystemVolumeTimer invalidate];
         updateSystemVolumeTimer = nil;

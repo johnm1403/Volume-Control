@@ -15,8 +15,7 @@
 
 @synthesize currentVolume = _currentVolume;
 
--(AudioDeviceID) getDefaultOutputDevice
-{
+- (AudioDeviceID)getDefaultOutputDevice {
     AudioObjectPropertyAddress getDefaultOutputDevicePropertyAddress = {
         kAudioHardwarePropertyDefaultOutputDevice,
         kAudioObjectPropertyScopeGlobal,
@@ -30,16 +29,14 @@
                                                  0, NULL,
                                                  &volumedataSize, &defaultOutputDeviceID);
     
-    if(kAudioHardwareNoError != result)
-    {
+    if (kAudioHardwareNoError != result) {
         NSLog(@"Cannot find default output device!");
     }
     
     return defaultOutputDeviceID;
 }
 
-- (void) setCurrentVolume:(double)currentVolume
-{
+- (void)setCurrentVolume:(double)currentVolume {
     AudioDeviceID defaultOutputDeviceID = [self getDefaultOutputDevice];
     
     AudioObjectPropertyAddress volumePropertyAddress = {
@@ -61,8 +58,7 @@
     }        
 }
 
-- (bool) isMuted
-{
+- (bool)isMuted {
     AudioDeviceID defaultOutputDeviceID = [self getDefaultOutputDevice];
     
     AudioObjectPropertyAddress volumePropertyAddress = {
@@ -85,9 +81,7 @@
     return muteVal;
 }
 
-
-- (double) currentVolume
-{
+- (double)currentVolume {
     AudioDeviceID defaultOutputDeviceID = [self getDefaultOutputDevice];
     
     AudioObjectPropertyAddress volumePropertyAddress = {
@@ -110,11 +104,7 @@
     return ((double)volume)*100.;
 }
 
--(void)dealloc
-{
-}
-
--(id)initWithVersion:(NSInteger)osxVersion{
+- (id)initWithVersion:(NSInteger)osxVersion {
     if (self = [super init])  {
         [self setOldVolume:[self currentVolume]];
         self->osxVersion = osxVersion;

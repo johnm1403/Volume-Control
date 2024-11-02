@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		526409A92CD20A7F0062662B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 526409A82CD20A7F0062662B /* ArgumentParser */; };
 		526409AB2CD20AD00062662B /* VolumeControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526409AA2CD20ABD0062662B /* VolumeControl.swift */; };
-		526409AE2CD20EB30062662B /* volumectl-bridging-header.h in Sources */ = {isa = PBXBuildFile; fileRef = 526409AD2CD20E9C0062662B /* volumectl-bridging-header.h */; };
 		654864A827480DE600F78F99 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654864A627480DCC00F78F99 /* Sparkle.framework */; };
 		654864A927480DE600F78F99 /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 654864A627480DCC00F78F99 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		65533217267F5D86004231D6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 65533216267F5D86004231D6 /* README.md */; };
@@ -53,9 +52,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		52036B042CD6317C005E8AA0 /* volumectl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = volumectl.entitlements; sourceTree = "<group>"; };
 		5264099C2CD20A1F0062662B /* volumectl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = volumectl; sourceTree = BUILT_PRODUCTS_DIR; };
 		526409AA2CD20ABD0062662B /* VolumeControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeControl.swift; sourceTree = "<group>"; };
-		526409AD2CD20E9C0062662B /* volumectl-bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "volumectl-bridging-header.h"; sourceTree = "<group>"; };
 		65220C75267F49CB007BE316 /* generate_keys.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = generate_keys.rb; sourceTree = "<group>"; };
 		65220C76267F49D4007BE316 /* sign_update.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = sign_update.rb; sourceTree = "<group>"; };
 		654864A627480DCC00F78F99 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
@@ -107,7 +106,6 @@
 		65996DFA267EAF330080A9A5 /* AccessibilityDialog.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccessibilityDialog.xib; sourceTree = "<group>"; };
 		65996E04267EB0FE0080A9A5 /* iTunes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iTunes.h; sourceTree = "<group>"; };
 		65996E05267EB0FF0080A9A5 /* iTunes Volume Control-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "iTunes Volume Control-Prefix.pch"; sourceTree = "<group>"; };
-		65996E06267EB0FF0080A9A5 /* Music.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Music.h; sourceTree = "<group>"; };
 		65996E07267EB0FF0080A9A5 /* Spotify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spotify.h; sourceTree = "<group>"; };
 		65996E08267EB0FF0080A9A5 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		65996E0B267EB1300080A9A5 /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemote.h; sourceTree = "<group>"; };
@@ -154,7 +152,6 @@
 		526409A42CD20A2F0062662B /* volumectl */ = {
 			isa = PBXGroup;
 			children = (
-				526409AD2CD20E9C0062662B /* volumectl-bridging-header.h */,
 				526409AA2CD20ABD0062662B /* VolumeControl.swift */,
 			);
 			path = volumectl;
@@ -171,6 +168,7 @@
 		65996C4C267EA86A0080A9A5 = {
 			isa = PBXGroup;
 			children = (
+				52036B042CD6317C005E8AA0 /* volumectl.entitlements */,
 				65996CD7267EAAC40080A9A5 /* User interface */,
 				526409A62CD20A370062662B /* Command Line interface */,
 				65996D03267EAC1F0080A9A5 /* Sources */,
@@ -312,10 +310,9 @@
 			children = (
 				65996E0A267EB11F0080A9A5 /* AppleRemote */,
 				65996E05267EB0FF0080A9A5 /* iTunes Volume Control-Prefix.pch */,
-				65996E04267EB0FE0080A9A5 /* iTunes.h */,
 				65996E08267EB0FF0080A9A5 /* main.m */,
-				65996E06267EB0FF0080A9A5 /* Music.h */,
 				65996E07267EB0FF0080A9A5 /* Spotify.h */,
+				65996E04267EB0FE0080A9A5 /* iTunes.h */,
 				BC20FAA128902EF500CF5CAF /* Doppler.h */,
 			);
 			path = "Supporting files";
@@ -411,8 +408,9 @@
 		65996C4D267EA86A0080A9A5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1610;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					5264099B2CD20A1F0062662B = {
 						CreatedOnToolsVersion = 16.1;
@@ -465,7 +463,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				526409AE2CD20EB30062662B /* volumectl-bridging-header.h in Sources */,
 				526409AB2CD20AD00062662B /* VolumeControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -489,6 +486,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = volumectl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = N5LFPP22TK;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -498,7 +496,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_OBJC_BRIDGING_HEADER = "\"Command Line Interface/volumectl/volumectl-bridging-header.h\"";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -509,6 +507,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = volumectl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = N5LFPP22TK;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -518,7 +517,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OBJC_BRIDGING_HEADER = "\"Command Line Interface/volumectl/volumectl-bridging-header.h\"";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -633,6 +632,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
 		};
@@ -646,7 +646,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 4TFA698Y9W;
+				DEVELOPMENT_TEAM = N5LFPP22TK;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -658,8 +658,8 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				PRODUCT_BUNDLE_IDENTIFIER = org.Alberti42.VolumeControlApp;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.martinsoft.VolumeControl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -675,7 +675,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 4TFA698Y9W;
+				DEVELOPMENT_TEAM = N5LFPP22TK;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -687,8 +687,8 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				PRODUCT_BUNDLE_IDENTIFIER = org.Alberti42.VolumeControlApp;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.martinsoft.VolumeControl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};

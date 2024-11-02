@@ -12,13 +12,12 @@
 #import <Sparkle/Sparkle.h>
 
 #import "iTunes.h"
-// #import "Music.h"
 #import "Spotify.h"
 #import "Doppler.h"
 
 @class IntroWindowController, AccessibilityDialog, StatusBarItem, PlayerApplication, SystemApplication;
 
-@interface AppDelegate : NSObject <NSApplicationDelegate> {
+@interface AppDelegate: NSObject<NSApplicationDelegate> {
     CALayer *mainLayer;
     CALayer *volumeImageLayer;
     CALayer *iconLayer;
@@ -104,10 +103,7 @@
 - (IBAction)toggleTapping:(id)sender;
 - (IBAction)aboutPanel:(id)sender;
 - (IBAction)sliderValueChanged:(NSSliderCell*)slider;
-//- (IBAction)showIntroWindow:(id)sender;
 - (IBAction)terminate:(id)sender;
-
-// - (void)appleRemoteButton: (AppleRemoteEventIdentifier)buttonIdentifier pressedDown: (BOOL) pressedDown clickCount: (unsigned int) count;
 
 - (void)resetEventTap;
 
@@ -125,8 +121,8 @@
     id musicPlayer;
 }
 
-- (BOOL) isRunning;
-- (iTunesEPlS) playerState;
+- (BOOL)isRunning;
+- (iTunesEPlS)playerState;
 
 @property (assign, nonatomic) double currentVolume;
 @property (assign, nonatomic) double oldVolume;
